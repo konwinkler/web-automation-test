@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Name Game - Test Suite" parallel="classes" thread-count="8">
+
+    <test name="All Tests">
+        <packages>
+            <package name="com.willowtreeapps"/>
+        </packages>
+    </test>
+
+</suite>

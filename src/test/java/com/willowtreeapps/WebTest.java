@@ -1,43 +1,35 @@
 package com.willowtreeapps;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-public class WebTest {
+@Test
+public abstract class WebTest {
 
     private WebDriver driver;
+    HomePage homePage;
 
     /**
      * Change the prop if you are on Windows or Linux to the corresponding file type
      * The chrome WebDrivers are included on the root of this project, to get the
      * latest versions go to https://sites.google.com/a/chromium.org/chromedriver/downloads
      */
-    @Before
+    @BeforeClass
     public void setup() {
-        System.setProperty("webdriver.chrome.driver", "chromedriver.mac");
+        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         Capabilities capabilities = DesiredCapabilities.chrome();
         driver = new ChromeDriver(capabilities);
         driver.navigate().to("http://www.ericrochester.com/name-game/");
+
+        homePage = new HomePage(driver);
     }
 
-    @Test
-    public void test_validate_title_is_present() {
-        new HomePage(driver)
-                .validateTitleIsPresent();
-    }
-
-    @Test
-    public void test_clicking_photo_increases_tries_counter() {
-        new HomePage(driver)
-                .validateClickingFirstPhotoIncreasesTriesCounter();
-    }
-
-    @After
+    @AfterClass
     public void teardown() {
         driver.quit();
         System.clearProperty("webdriver.chrome.driver");

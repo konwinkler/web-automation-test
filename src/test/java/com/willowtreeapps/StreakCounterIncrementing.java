@@ -2,7 +2,7 @@ package com.willowtreeapps;
 
 import static org.testng.Assert.assertEquals;
 
-public class StreakCounterIncrementing extends WebTest {
+public class StreakCounterIncrementing extends WebTestBase {
 
     @Override
     public void run() {

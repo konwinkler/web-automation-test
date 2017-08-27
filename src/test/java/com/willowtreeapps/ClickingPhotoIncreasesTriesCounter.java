@@ -1,6 +1,6 @@
 package com.willowtreeapps;
 
-public class ClickingPhotoIncreasesTriesCounter extends WebTest {
+public class ClickingPhotoIncreasesTriesCounter extends WebTestBase {
 
     @Override
     public void run() {

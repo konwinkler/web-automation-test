@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Test
-public abstract class WebTest {
+public abstract class WebTestBase {
 
     private static final Logger logger = LogManager.getLogger(HomePage.class.getName());
 

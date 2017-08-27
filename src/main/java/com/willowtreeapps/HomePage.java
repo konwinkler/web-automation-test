@@ -2,7 +2,6 @@ package com.willowtreeapps;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -11,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.testng.Assert.assertEquals;
@@ -26,7 +26,7 @@ public class HomePage extends BasePage {
         super(driver);
     }
 
-    // Element Section
+    // Elements Section
 
     private WebElement streak() {
         return driver.findElement(By.className("streak"));
@@ -40,11 +40,18 @@ public class HomePage extends BasePage {
         return driver.findElement(By.xpath(String.format(".//div[./text()='%s']/..", name)));
     }
 
+    private List<WebElement> photoNames() {
+        return driver.findElements(By.className("name"));
+    }
+
+    private WebElement title() {
+        return driver.findElement(By.cssSelector("h1"));
+    }
+
     // Helper Method Section
 
-    void validateTitleIsPresent() {
-        WebElement title = driver.findElement(By.cssSelector("h1"));
-        Assert.assertTrue(title != null);
+    String getTitle() {
+        return title().getText();
     }
 
     void validateClickingFirstPhotoIncreasesTriesCounter() {
@@ -122,6 +129,33 @@ public class HomePage extends BasePage {
     void clickPhotoByName(String name) {
         photoByName(name).click();
         waitUntilAllImagesLoaded();
+    }
+
+    /**
+     * Clicks on a wrong photo.
+     */
+    void makeWrongGuess() {
+        String nameToGuess = getNameToGuess();
+        List<String> allPhotoNames = getAllPhotoNames();
+
+        // Find the first name of the photo which is not the name to guess.
+        String firstWrongName = allPhotoNames.stream()
+                .filter(name -> !name.equals(nameToGuess))
+                .findFirst()
+                .orElse(null);
+
+        clickPhotoByName(firstWrongName);
+    }
+
+    /**
+     * Returns all names associated with a photo.
+     *
+     * @return All names associated with a photo.
+     */
+    private List<String> getAllPhotoNames() {
+        return photoNames().stream()
+                .map(WebElement::getText)
+                .collect(Collectors.toList());
     }
 
 }

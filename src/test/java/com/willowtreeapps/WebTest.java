@@ -1,12 +1,20 @@
 package com.willowtreeapps;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.IOException;
 
 @Test
 public abstract class WebTest {
@@ -33,6 +41,30 @@ public abstract class WebTest {
     public void teardown() {
         driver.quit();
         System.clearProperty("webdriver.chrome.driver");
+    }
+
+    /**
+     * Takes a screenshot if the test fails.
+     *
+     * @param result {@link ITestResult} The result of the test.
+     */
+    @AfterMethod
+    final public void close(ITestResult result) {
+        try {
+            if (result.getStatus() == ITestResult.FAILURE) {
+
+                // Take the screenshot.
+                TakesScreenshot d = (TakesScreenshot) driver;
+                File screenshot = d.getScreenshotAs(OutputType.FILE);
+
+                // Move to screenshot folder and rename with current timestamp.
+                File newDestination = new File("screenshots/" + System.currentTimeMillis() + ".png");
+                FileUtils.moveFile(screenshot, newDestination);
+            }
+        } catch (IOException e) {
+            // Print the stack trace if the screenshot could not be takes.
+            e.printStackTrace();
+        }
     }
 
 }

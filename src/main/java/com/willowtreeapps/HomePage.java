@@ -72,7 +72,7 @@ public class HomePage extends BasePage {
      *
      * @param name The employee name to identify the photo to click.
      */
-    private void clickPhotoByName(String name) {
+    void clickPhotoByName(String name) {
         photoByName(name).click();
     }
 
@@ -106,7 +106,7 @@ public class HomePage extends BasePage {
      *
      * @return The name to guess.
      */
-    private String getNameToGuess() {
+    String getNameToGuess() {
         return nameToGuess().getText();
     }
 
@@ -151,17 +151,19 @@ public class HomePage extends BasePage {
      * Clicks on a wrong photo.
      */
     void makeWrongGuess() {
+        clickPhotoByName(getFirstWrongName());
+        waitUntilAllImagesLoaded();
+    }
+
+    String getFirstWrongName() {
         String nameToGuess = getNameToGuess();
         List<String> unselectedPhotoNames = getAllUnselectedPhotoNames();
 
         // Find the first name of the photo which is not the name to guess.
-        String firstWrongName = unselectedPhotoNames.stream()
+        return unselectedPhotoNames.stream()
                 .filter(name -> !name.equals(nameToGuess))
                 .findFirst()
                 .orElse(null);
-
-        clickPhotoByName(firstWrongName);
-        waitUntilAllImagesLoaded();
     }
 
     /**

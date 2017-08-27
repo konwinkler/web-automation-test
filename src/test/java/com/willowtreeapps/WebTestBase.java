@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import static org.testng.Assert.assertEquals;
+
 @Test
 public abstract class WebTestBase {
 
@@ -81,6 +83,19 @@ public abstract class WebTestBase {
             // Print the stack trace if the screenshot could not be takes.
             logger.error("Screenshot could not be taken.", exception);
         }
+    }
+
+    /**
+     * Verifies all 3 counters display the provided values.
+     *
+     * @param expectedTries   The expected tries value.
+     * @param expectedCorrect The expected correct value.
+     * @param expectedStreak  The expected streak value.
+     */
+    protected void verifyCounters(int expectedTries, int expectedCorrect, int expectedStreak) {
+        assertEquals(homePage.getTriesCounter(), expectedTries, "Counter of tries has unexpected value.");
+        assertEquals(homePage.getCorrectCounter(), expectedCorrect, "Counter of correct has unexpected value.");
+        assertEquals(homePage.getStreakCounter(), expectedStreak, "Counter of streak has unexpected value.");
     }
 
 }

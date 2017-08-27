@@ -1,7 +1,5 @@
 package com.willowtreeapps;
 
-import static org.testng.Assert.assertEquals;
-
 public class ClickTenPhotos extends WebTestBase {
 
     @Override
@@ -47,12 +45,6 @@ public class ClickTenPhotos extends WebTestBase {
         // Click 10: Wrong
         homePage.makeWrongGuess();
         verifyCounters(10, 5, 0);
-    }
-
-    private void verifyCounters(int expectedTries, int expectedCorrect, int expectedStreak) {
-        assertEquals(homePage.getTriesCounter(), expectedTries, "Counter of tries has unexpected value.");
-        assertEquals(homePage.getCorrectCounter(), expectedCorrect, "Counter of correct has unexpected value.");
-        assertEquals(homePage.getStreakCounter(), expectedStreak, "Counter of streak has unexpected value.");
     }
 
 }

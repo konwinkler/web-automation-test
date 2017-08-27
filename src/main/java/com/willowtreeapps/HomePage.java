@@ -26,39 +26,39 @@ public class HomePage extends BasePage {
 
     // Elements Section
 
-    private WebElement streak() {
-        return driver.findElement(By.className("streak"));
+    private WebElement attempts() {
+        return stats().findElement(By.className("attempts"));
+    }
+
+    private WebElement correct() {
+        return stats().findElement(By.className("correct"));
     }
 
     private WebElement nameToGuess() {
         return driver.findElement(By.id("name"));
     }
 
+    private List<WebElement> photos() {
+        return driver.findElements(By.className("photo"));
+    }
+
     private WebElement photoByName(String name) {
         return driver.findElement(By.xpath(String.format(".//div[./text()='%s']/..", name)));
     }
 
-    private List<WebElement> photoNames() {
-        return driver.findElements(By.className("name"));
+    private WebElement stats() {
+        return driver.findElement(By.id("stats"));
+    }
+
+    private WebElement streak() {
+        return stats().findElement(By.className("streak"));
     }
 
     private WebElement title() {
         return driver.findElement(By.cssSelector("h1"));
     }
 
-    private List<WebElement> photos() {
-        return driver.findElements(By.className("photo"));
-    }
-
-    private WebElement attempts() {
-        return driver.findElement(By.className("attempts"));
-    }
-
     // Helper Method Section
-
-    String getTitle() {
-        return title().getText();
-    }
 
     /**
      * Clicks on the first photo.
@@ -69,12 +69,100 @@ public class HomePage extends BasePage {
     }
 
     /**
+     * Clicks the photo identified by the provided employee name.
+     *
+     * @param name The employee name to identify the photo to click.
+     */
+    private void clickPhotoByName(String name) {
+        photoByName(name).click();
+    }
+
+    /**
+     * Returns all names associated with an unselected photo.
+     *
+     * @return All names associated with an unselected photo.
+     */
+    private List<String> getAllUnselectedPhotoNames() {
+        return photos().stream()                                                       // Traverse through all photos
+                .filter(photo -> {                                                     // Filter for unselected photos
+                    String classes  = photo.getAttribute("class");                     // Inspect the photo's classes
+                    return !classes.contains("wrong") && !classes.contains("correct"); // Has not class wrong/correct
+                })
+                .map(photo -> photo.findElement(By.className("name")))                 // Access name element of photo
+                .map(WebElement::getText)                                              // Get the text of the name
+                .collect(Collectors.toList());                                         // Return as a list
+    }
+
+    /**
+     * Returns the displayed value of correct guesses.
+     *
+     * @return The correct guesses as int.
+     */
+    int getCorrectCounter() {
+        return Integer.valueOf(correct().getText());
+    }
+
+    /**
+     * Returns the name to guess of the current round.
+     *
+     * @return The name to guess.
+     */
+    private String getNameToGuess() {
+        return nameToGuess().getText();
+    }
+
+    /**
+     * Returns the current streak value.
+     *
+     * @return The integer streak.
+     */
+    int getStreakCounter() {
+        return Integer.parseInt(streak().getText());
+    }
+
+    /**
+     * Returns the title of the page.
+     *
+     * @return The title of the page.
+     */
+    String getTitle() {
+        return title().getText();
+    }
+
+    /**
      * Returns the displayed tries.
      *
      * @return Displayed tries.
      */
-    int getTries() {
+    int getTriesCounter() {
         return Integer.parseInt(attempts().getText());
+    }
+
+    /**
+     * Clicks the correct photo.
+     */
+    void makeCorrectGuess() {
+        String nameToGuess = getNameToGuess();
+        clickPhotoByName(nameToGuess);
+        sleep(4500); //TODO: Replace with green background disappears.
+        waitUntilAllImagesLoaded();
+    }
+
+    /**
+     * Clicks on a wrong photo.
+     */
+    void makeWrongGuess() {
+        String nameToGuess = getNameToGuess();
+        List<String> unselectedPhotoNames = getAllUnselectedPhotoNames();
+
+        // Find the first name of the photo which is not the name to guess.
+        String firstWrongName = unselectedPhotoNames.stream()
+                .filter(name -> !name.equals(nameToGuess))
+                .findFirst()
+                .orElse(null);
+
+        clickPhotoByName(firstWrongName);
+        waitUntilAllImagesLoaded();
     }
 
     /**
@@ -112,61 +200,6 @@ public class HomePage extends BasePage {
         };
 
         new WebDriverWait(driver, 25, 100).until(imageReady);
-    }
-
-    /**
-     * Returns the current streak value.
-     *
-     * @return The integer streak.
-     */
-    int getCurrentStreak() {
-        return Integer.parseInt(streak().getText());
-    }
-
-    /**
-     * Returns the name to guess of the current round.
-     *
-     * @return The name to guess.
-     */
-    String getNameToGuess() {
-        return nameToGuess().getText();
-    }
-
-    /**
-     * Clicks the photo identified by the provided employee name.
-     *
-     * @param name The employee name to identify the photo to click.
-     */
-    void clickPhotoByName(String name) {
-        photoByName(name).click();
-        waitUntilAllImagesLoaded();
-    }
-
-    /**
-     * Clicks on a wrong photo.
-     */
-    void makeWrongGuess() {
-        String nameToGuess = getNameToGuess();
-        List<String> allPhotoNames = getAllPhotoNames();
-
-        // Find the first name of the photo which is not the name to guess.
-        String firstWrongName = allPhotoNames.stream()
-                .filter(name -> !name.equals(nameToGuess))
-                .findFirst()
-                .orElse(null);
-
-        clickPhotoByName(firstWrongName);
-    }
-
-    /**
-     * Returns all names associated with a photo.
-     *
-     * @return All names associated with a photo.
-     */
-    private List<String> getAllPhotoNames() {
-        return photoNames().stream()
-                .map(WebElement::getText)
-                .collect(Collectors.toList());
     }
 
 }

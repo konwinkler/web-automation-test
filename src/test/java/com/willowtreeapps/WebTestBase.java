@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Test
 public abstract class WebTestBase {
@@ -37,6 +38,8 @@ public abstract class WebTestBase {
         Capabilities capabilities = DesiredCapabilities.chrome();
         driver = new ChromeDriver(capabilities);
         homePage = new HomePage(driver);
+
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 
         driver.navigate().to("http://www.ericrochester.com/name-game/");
         homePage.waitUntilAllImagesLoaded();

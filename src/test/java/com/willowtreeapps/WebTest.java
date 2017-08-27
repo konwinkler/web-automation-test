@@ -46,7 +46,7 @@ public abstract class WebTest {
     /**
      * Takes a screenshot if the test fails.
      *
-     * @param result {@link ITestResult} The result of the test.
+     * @param result The result of the test.
      */
     @AfterMethod
     final public void close(ITestResult result) {

@@ -1,5 +1,7 @@
 package com.willowtreeapps;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -18,6 +20,7 @@ import static org.testng.Assert.assertEquals;
  */
 public class HomePage extends BasePage {
 
+    private static final Logger logger = LogManager.getLogger(HomePage.class.getName());
 
     public HomePage(WebDriver driver) {
         super(driver);
@@ -56,7 +59,7 @@ public class HomePage extends BasePage {
      * @param imageIndex The index of the image to wait for.
      */
     private void waitUntilImageLoaded(int imageIndex) {
-        System.out.println("wait for image: " + imageIndex);
+        logger.debug("wait for image: " + imageIndex);
 
         ExpectedCondition<Boolean> imageReady = input ->
         {
@@ -72,7 +75,7 @@ public class HomePage extends BasePage {
                         images.get(imageIndex));
             }
 
-            System.out.println("image ready: " + ready);
+            logger.debug("image ready: " + ready);
 
             return ready;
         };

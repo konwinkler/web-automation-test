@@ -1,12 +1,16 @@
 package com.willowtreeapps;
 
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
 
-public class ClickingPhotoIncreasesTriesCounter extends WebTest {
+public class ClickingPhotoIncreasesTriesCounter extends WebTestBase {
 
-    @Test
-    public void test_clicking_photo_increases_tries_counter() {
-        homePage.validateClickingFirstPhotoIncreasesTriesCounter();
+    @Override
+    public void run() {
+        assertEquals(homePage.getTriesCounter(), 0, "Expect to have no tries at beginning of game.");
+
+        homePage.clickFirstPhoto();
+
+        assertEquals(homePage.getTriesCounter(), 1, "Expect to have one try after one guess.");
     }
 
 }

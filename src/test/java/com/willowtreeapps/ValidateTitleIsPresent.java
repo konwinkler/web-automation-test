@@ -1,12 +1,12 @@
 package com.willowtreeapps;
 
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertNotNull;
 
-public class ValidateTitleIsPresent extends WebTest {
+public class ValidateTitleIsPresent extends WebTestBase {
 
-    @Test
-    public void test_validate_title_is_present() {
-        homePage.validateTitleIsPresent();
+    @Override
+    public void run() {
+        assertNotNull(homePage.getTitle(), "Expected title to be present.");
     }
 
 }

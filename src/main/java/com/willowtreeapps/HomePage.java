@@ -143,7 +143,8 @@ public class HomePage extends BasePage {
     void makeCorrectGuess() {
         String nameToGuess = getNameToGuess();
         clickPhotoByName(nameToGuess);
-        sleep(4500); //TODO: Replace with green background disappears.
+
+        waitUntilCorrectSelectionNotDisplayed();
         waitUntilAllImagesLoaded();
     }
 
@@ -174,6 +175,27 @@ public class HomePage extends BasePage {
     }
 
     /**
+     * Waits until the correct selection (green photo) is not displayed anymore.
+     */
+    private void waitUntilCorrectSelectionNotDisplayed() {
+        ExpectedCondition<Boolean> correctSelectionNotDisplayed = driver ->
+        {
+            assert driver != null;
+
+            // Get all correct images.
+            List<WebElement> correctImages = driver.findElements(By.cssSelector(".photo.correct"));
+
+            // No correct image is displayed if list is empty
+            Boolean notDisplayed = correctImages.isEmpty();
+            logger.info("correct selection not: " + notDisplayed);
+
+            return notDisplayed;
+        };
+
+        new WebDriverWait(driver, 25, 100).until(correctSelectionNotDisplayed);
+    }
+
+    /**
      * Waits until the image with the specified index is loaded.
      *
      * @param imageIndex The index of the image to wait for.
@@ -181,8 +203,9 @@ public class HomePage extends BasePage {
     private void waitUntilImageLoaded(int imageIndex) {
         logger.debug("wait for image: " + imageIndex);
 
-        ExpectedCondition<Boolean> imageReady = input ->
+        ExpectedCondition<Boolean> imageReady = driver ->
         {
+            assert driver != null;
             Boolean ready = false;
 
             // Get all images.

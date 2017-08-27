@@ -1,6 +1,8 @@
 package com.willowtreeapps;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -19,6 +21,8 @@ import java.io.IOException;
 @Test
 public abstract class WebTest {
 
+    private static final Logger logger = LogManager.getLogger(HomePage.class.getName());
+
     private WebDriver driver;
     HomePage homePage;
 
@@ -32,10 +36,19 @@ public abstract class WebTest {
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         Capabilities capabilities = DesiredCapabilities.chrome();
         driver = new ChromeDriver(capabilities);
-        driver.navigate().to("http://www.ericrochester.com/name-game/");
-
         homePage = new HomePage(driver);
+
+        driver.navigate().to("http://www.ericrochester.com/name-game/");
+        homePage.waitUntilAllImagesLoaded();
     }
+
+    /**
+     * Executes the test.
+     *
+     * Implemented by test classes.
+     */
+    @Test
+    public abstract void run();
 
     @AfterClass
     public void teardown() {
@@ -61,9 +74,9 @@ public abstract class WebTest {
                 File newDestination = new File("screenshots/" + System.currentTimeMillis() + ".png");
                 FileUtils.moveFile(screenshot, newDestination);
             }
-        } catch (IOException e) {
+        } catch (IOException exception) {
             // Print the stack trace if the screenshot could not be takes.
-            e.printStackTrace();
+            logger.error("Screenshot could not be taken.", exception);
         }
     }
 

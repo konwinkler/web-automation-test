@@ -22,19 +22,32 @@ public class HomePage extends BasePage {
 
     private static final Logger logger = LogManager.getLogger(HomePage.class.getName());
 
-    public HomePage(WebDriver driver) {
+    HomePage(WebDriver driver) {
         super(driver);
     }
 
-    public void validateTitleIsPresent() {
+    // Element Section
+
+    private WebElement streak() {
+        return driver.findElement(By.className("streak"));
+    }
+
+    private WebElement nameToGuess() {
+        return driver.findElement(By.id("name"));
+    }
+
+    private WebElement photoByName(String name) {
+        return driver.findElement(By.xpath(String.format(".//div[./text()='%s']/..", name)));
+    }
+
+    // Helper Method Section
+
+    void validateTitleIsPresent() {
         WebElement title = driver.findElement(By.cssSelector("h1"));
         Assert.assertTrue(title != null);
     }
 
-    public void validateClickingFirstPhotoIncreasesTriesCounter() {
-        //Wait for page to load
-        waitUntilAllImagesLoaded();
-
+    void validateClickingFirstPhotoIncreasesTriesCounter() {
         assertEquals(Integer.parseInt(driver.findElement(By.className("attempts")).getText()), 0,
                 "Expect to have no tries at beginning of game.");
 
@@ -49,7 +62,7 @@ public class HomePage extends BasePage {
     /**
      * Wait until each of the 5 images is loaded.
      */
-    private void waitUntilAllImagesLoaded() {
+    void waitUntilAllImagesLoaded() {
         IntStream.range(0, 5).forEach(this::waitUntilImageLoaded);
     }
 
@@ -81,6 +94,34 @@ public class HomePage extends BasePage {
         };
 
         new WebDriverWait(driver, 25, 100).until(imageReady);
+    }
+
+    /**
+     * Returns the current streak value.
+     *
+     * @return The integer streak.
+     */
+    int getCurrentStreak() {
+        return Integer.parseInt(streak().getText());
+    }
+
+    /**
+     * Returns the name to guess of the current round.
+     *
+     * @return The name to guess.
+     */
+    String getNameToGuess() {
+        return nameToGuess().getText();
+    }
+
+    /**
+     * Clicks the photo identified by the provided employee name.
+     *
+     * @param name The employee name to identify the photo to click.
+     */
+    void clickPhotoByName(String name) {
+        photoByName(name).click();
+        waitUntilAllImagesLoaded();
     }
 
 }

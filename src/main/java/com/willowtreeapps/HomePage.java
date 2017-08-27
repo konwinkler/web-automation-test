@@ -65,7 +65,6 @@ public class HomePage extends BasePage {
      */
     void clickFirstPhoto() {
         photos().get(0).click();
-        waitUntilAllImagesLoaded();
     }
 
     /**

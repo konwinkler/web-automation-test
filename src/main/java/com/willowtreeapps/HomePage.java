@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.testng.Assert.assertEquals;
-
 /**
  * Created on 5/23/17.
  */
@@ -48,22 +46,35 @@ public class HomePage extends BasePage {
         return driver.findElement(By.cssSelector("h1"));
     }
 
+    private List<WebElement> photos() {
+        return driver.findElements(By.className("photo"));
+    }
+
+    private WebElement attempts() {
+        return driver.findElement(By.className("attempts"));
+    }
+
     // Helper Method Section
 
     String getTitle() {
         return title().getText();
     }
 
-    void validateClickingFirstPhotoIncreasesTriesCounter() {
-        assertEquals(Integer.parseInt(driver.findElement(By.className("attempts")).getText()), 0,
-                "Expect to have no tries at beginning of game.");
-
-        driver.findElement(By.className("photo")).click();
-
+    /**
+     * Clicks on the first photo.
+     */
+    void clickFirstPhoto() {
+        photos().get(0).click();
         waitUntilAllImagesLoaded();
+    }
 
-        assertEquals(Integer.parseInt(driver.findElement(By.className("attempts")).getText()), 1,
-        "Expect to have one try after one guess.");
+    /**
+     * Returns the displayed tries.
+     *
+     * @return Displayed tries.
+     */
+    int getTries() {
+        return Integer.parseInt(attempts().getText());
     }
 
     /**

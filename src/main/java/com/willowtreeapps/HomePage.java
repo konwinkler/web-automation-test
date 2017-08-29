@@ -7,14 +7,13 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Created on 5/23/17.
+ * The homepage (and only page) of the name game.
  */
 public class HomePage extends BasePage {
 
@@ -35,19 +34,19 @@ public class HomePage extends BasePage {
     }
 
     private WebElement nameToGuess() {
-        return driver.findElement(By.id("name"));
+        return findElement(By.id("name"));
     }
 
     private List<WebElement> photos() {
-        return driver.findElements(By.className("photo"));
+        return findElements(By.className("photo"));
     }
 
     private WebElement photoByName(String name) {
-        return driver.findElement(By.xpath(String.format(".//div[./text()='%s']/..", name)));
+        return findElement(By.xpath(String.format(".//div[./text()='%s']/..", name)));
     }
 
     private WebElement stats() {
-        return driver.findElement(By.id("stats"));
+        return findElement(By.id("stats"));
     }
 
     private WebElement streak() {
@@ -55,7 +54,7 @@ public class HomePage extends BasePage {
     }
 
     private WebElement title() {
-        return driver.findElement(By.cssSelector("h1"));
+        return findElement(By.cssSelector("h1"));
     }
 
     // Helper Method Section
@@ -187,12 +186,12 @@ public class HomePage extends BasePage {
 
             // No correct image is displayed if list is empty
             Boolean notDisplayed = correctImages.isEmpty();
-            logger.info("correct selection not: " + notDisplayed);
+            logger.debug("correct selection not displayed: " + notDisplayed);
 
             return notDisplayed;
         };
 
-        new WebDriverWait(driver, 25, 100).until(correctSelectionNotDisplayed);
+        getWait().until(correctSelectionNotDisplayed);
     }
 
     /**
@@ -223,7 +222,7 @@ public class HomePage extends BasePage {
             return ready;
         };
 
-        new WebDriverWait(driver, 25, 100).until(imageReady);
+        getWait().until(imageReady);
     }
 
 }

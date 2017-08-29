@@ -7,14 +7,13 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Created on 5/23/17.
+ * The homepage (and only page) of the name game.
  */
 public class HomePage extends BasePage {
 
@@ -35,19 +34,20 @@ public class HomePage extends BasePage {
     }
 
     private WebElement nameToGuess() {
-        return driver.findElement(By.id("name"));
+        return findElement(By.id("name"));
     }
 
     private List<WebElement> photos() {
-        return driver.findElements(By.className("photo"));
+        return findElements(By.className("photo"));
     }
 
     private WebElement photoByName(String name) {
-        return driver.findElement(By.xpath(String.format(".//div[./text()='%s']/..", name)));
+        // Use escaped double quotes to allow for names containing a single quote, like Matthew O'Connell
+        return findElement(By.xpath(String.format(".//div[./text()=\"%s\"]/..", name)));
     }
 
     private WebElement stats() {
-        return driver.findElement(By.id("stats"));
+        return findElement(By.id("stats"));
     }
 
     private WebElement streak() {
@@ -55,7 +55,7 @@ public class HomePage extends BasePage {
     }
 
     private WebElement title() {
-        return driver.findElement(By.cssSelector("h1"));
+        return findElement(By.cssSelector("h1"));
     }
 
     // Helper Method Section
@@ -143,7 +143,8 @@ public class HomePage extends BasePage {
     void makeCorrectGuess() {
         String nameToGuess = getNameToGuess();
         clickPhotoByName(nameToGuess);
-        sleep(4500); //TODO: Replace with green background disappears.
+
+        waitUntilCorrectSelectionNotDisplayed();
         waitUntilAllImagesLoaded();
     }
 
@@ -174,6 +175,27 @@ public class HomePage extends BasePage {
     }
 
     /**
+     * Waits until the correct selection (green photo) is not displayed anymore.
+     */
+    private void waitUntilCorrectSelectionNotDisplayed() {
+        ExpectedCondition<Boolean> correctSelectionNotDisplayed = driver ->
+        {
+            assert driver != null;
+
+            // Get all correct images.
+            List<WebElement> correctImages = driver.findElements(By.cssSelector(".photo.correct"));
+
+            // No correct image is displayed if list is empty
+            Boolean notDisplayed = correctImages.isEmpty();
+            logger.debug("correct selection not displayed: " + notDisplayed);
+
+            return notDisplayed;
+        };
+
+        getWait().until(correctSelectionNotDisplayed);
+    }
+
+    /**
      * Waits until the image with the specified index is loaded.
      *
      * @param imageIndex The index of the image to wait for.
@@ -181,8 +203,9 @@ public class HomePage extends BasePage {
     private void waitUntilImageLoaded(int imageIndex) {
         logger.debug("wait for image: " + imageIndex);
 
-        ExpectedCondition<Boolean> imageReady = input ->
+        ExpectedCondition<Boolean> imageReady = driver ->
         {
+            assert driver != null;
             Boolean ready = false;
 
             // Get all images.
@@ -200,7 +223,7 @@ public class HomePage extends BasePage {
             return ready;
         };
 
-        new WebDriverWait(driver, 25, 100).until(imageReady);
+        getWait().until(imageReady);
     }
 
 }

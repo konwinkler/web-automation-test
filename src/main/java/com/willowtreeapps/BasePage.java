@@ -1,99 +1,57 @@
 package com.willowtreeapps;
 
-import org.assertj.swing.assertions.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 /**
- * Created on 5/23/17.
+ * Base class for web tests.
+ *
+ * WebDriver is not exposed to subclasses.
  */
-public class BasePage {
+class BasePage {
 
-    public WebDriver driver;
+    final private WebDriver driver;
 
-    public BasePage(WebDriver driver) {
+    /**
+     * Constructor.
+     *
+     * @param driver The driver to control the browser.
+     */
+    BasePage(WebDriver driver) {
         this.driver = driver;
     }
 
-    public BasePage validateAttribute(String css, String attr, String regex) {
-        return validateAttribute(By.cssSelector(css), attr, regex);
-    }
-
-    public BasePage validateAttribute(By by, String attr, String regex) {
-        return validateAttribute(driver.findElement(by), attr, regex);
-    }
-
-    public BasePage validateAttribute(WebElement element, String attr, String regex) {
-        String actual = null;
-        try {
-            actual = element.getAttribute(attr);
-            if (actual.equals(regex)) {
-                return this; // test passes
-            }
-        } catch (Exception e) {
-            Assertions.fail(String.format("Attribute not fount! [Attribute: %s] [Desired value: %s] [Actual value: %s] [Element: %s] [Message: %s]",
-                    attr,
-                    regex,
-                    actual,
-                    element.toString(),
-                    e.getMessage()), e);
-        }
-
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(actual);
-
-        Assertions.assertThat(m.find())
-                .withFailMessage("Attribute doesn't match! [Attribute: %s] [Desired value: %s] [Actual value: %s] [Element: %s]",
-                        attr,
-                        regex,
-                        actual,
-                        element.toString())
-                .isTrue();
-        return this;
-    }
-
-    public BasePage validateText(String css, String text) {
-        return validateText(By.cssSelector(css), text);
+    /**
+     * Find a web element.
+     *
+     * @param byLocator The locator to find the element.
+     * @return The web element found by the locator.
+     */
+    WebElement findElement(By byLocator) {
+        return driver.findElement(byLocator);
     }
 
     /**
-     * Validate Text ignores white spaces
+     * Find a list of web element.
+     *
+     * @param byLocator The locator to find the elements.
+     * @return The web elements found by the locator.
      */
-    public BasePage validateText(By by, String text) {
-        Assertions.assertThat(text).isEqualToIgnoringWhitespace(getText(by));
-        return this;
+    List<WebElement> findElements(By byLocator) {
+        return driver.findElements(byLocator);
     }
 
-    public String getText(By by) {
-        WebElement e = driver.findElement(by);
-        return e.getTagName().equalsIgnoreCase("input")
-                || e.getTagName().equalsIgnoreCase("select")
-                || e.getTagName().equalsIgnoreCase("textarea")
-                ? e.getAttribute("value")
-                : e.getText();
-    }
-
-    public BasePage validatePresent(String css) {
-        return validatePresent(By.cssSelector(css));
-    }
-
-    public BasePage validatePresent(By by) {
-        Assertions.assertThat(driver.findElements(by).size())
-                .withFailMessage("Element not present: [Element: %s]", by.toString())
-                .isGreaterThan(0);
-        return this;
-    }
-
-    public void sleep(int timeInMillis) {
-        try {
-            Thread.sleep(timeInMillis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    /**
+     * Wait for explicit waiting.
+     *
+     * @return The default explicit wait timer.
+     */
+    WebDriverWait getWait() {
+        return new WebDriverWait(driver, 25, 100);
     }
 
 }

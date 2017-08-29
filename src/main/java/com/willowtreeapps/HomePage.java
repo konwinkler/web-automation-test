@@ -42,7 +42,8 @@ public class HomePage extends BasePage {
     }
 
     private WebElement photoByName(String name) {
-        return findElement(By.xpath(String.format(".//div[./text()='%s']/..", name)));
+        // Use escaped double quotes to allow for names containing a single quote, like Matthew O'Connell
+        return findElement(By.xpath(String.format(".//div[./text()=\"%s\"]/..", name)));
     }
 
     private WebElement stats() {

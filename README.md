@@ -15,7 +15,13 @@
   - Click on `Delete existing project and import` (if prompted)
   
 ### Running Tests
-- Intellij
-  - `test > java > com.willowtreeapps > WebTest`
-  - Right click on any method tagged with `@Test`
-  - Click on `Run 'test_...()`
+- Intellij all tests
+  - `test > resources`
+  - Right click on `TestNG.xml`
+  - Click on `Run TestNG.xml`
+- Intellij single test
+  - `test > java > com.willowtreeapps`
+  - Right click on any class
+  - Click on `Run <className>`
+- bash: `./gradlew test`
+- windows cmd: `gradle test`

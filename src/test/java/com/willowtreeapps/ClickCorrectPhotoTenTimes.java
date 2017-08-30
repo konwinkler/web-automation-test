@@ -13,6 +13,7 @@ public class ClickCorrectPhotoTenTimes extends WebTestBase {
         IntStream.range(0, 10).forEach(
              i -> homePage.clickPhotoByName(correctName)
         );
+        homePage.waitUntilCorrectSelectionNotDisplayed();
 
         verifyCounters(1, 1, 1);
     }

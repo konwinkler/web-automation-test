@@ -51,7 +51,7 @@ class BasePage {
      * @return The default explicit wait timer.
      */
     WebDriverWait getWait() {
-        return new WebDriverWait(driver, 25, 100);
+        return new WebDriverWait(driver, 60, 100);
     }
 
 }

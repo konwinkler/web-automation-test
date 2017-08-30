@@ -65,6 +65,7 @@ public class HomePage extends BasePage {
      */
     void clickFirstPhoto() {
         photos().get(0).click();
+        waitUntilAllImagesLoaded();
     }
 
     /**
@@ -102,12 +103,41 @@ public class HomePage extends BasePage {
     }
 
     /**
+     * Finds a name of a photo which will be an incorrect guess.
+     *
+     * Additionally this method only returns names which have not been guessed yet.
+     *
+     * @return Name of a photo which will be incorrect.
+     */
+    String getFirstWrongName() {
+        String nameToGuess = getNameToGuess();
+        List<String> unselectedPhotoNames = getAllUnselectedPhotoNames();
+
+        // Find the first name of the photo which is not the name to guess.
+        return unselectedPhotoNames.stream()
+                .filter(name -> !name.equals(nameToGuess))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
      * Returns the name to guess of the current round.
      *
      * @return The name to guess.
      */
     String getNameToGuess() {
         return nameToGuess().getText();
+    }
+
+    /**
+     * Returns the source links of all photos.
+     *
+     * @return The source links of all photos.
+     */
+    List<String> getPhotosSources() {
+        return images().stream()
+                .map(image -> image.getAttribute("src"))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -156,17 +186,6 @@ public class HomePage extends BasePage {
         waitUntilAllImagesLoaded();
     }
 
-    String getFirstWrongName() {
-        String nameToGuess = getNameToGuess();
-        List<String> unselectedPhotoNames = getAllUnselectedPhotoNames();
-
-        // Find the first name of the photo which is not the name to guess.
-        return unselectedPhotoNames.stream()
-                .filter(name -> !name.equals(nameToGuess))
-                .findFirst()
-                .orElse(null);
-    }
-
     /**
      * Wait until each of the 5 images is loaded.
      */
@@ -177,22 +196,23 @@ public class HomePage extends BasePage {
     /**
      * Waits until the correct selection (green photo) is not displayed anymore.
      */
-    private void waitUntilCorrectSelectionNotDisplayed() {
+    void waitUntilCorrectSelectionNotDisplayed() {
         ExpectedCondition<Boolean> correctSelectionNotDisplayed = driver ->
         {
             assert driver != null;
 
-            // Get all correct images.
-            List<WebElement> correctImages = driver.findElements(By.cssSelector(".photo.correct"));
-
             // No correct image is displayed if list is empty
-            Boolean notDisplayed = correctImages.isEmpty();
+            Boolean notDisplayed = correctPhotos().isEmpty();
             logger.debug("correct selection not displayed: " + notDisplayed);
 
             return notDisplayed;
         };
 
         getWait().until(correctSelectionNotDisplayed);
+    }
+
+    private List<WebElement> correctPhotos() {
+        return findElements(By.cssSelector(".photo.correct"));
     }
 
     /**
@@ -209,7 +229,7 @@ public class HomePage extends BasePage {
             Boolean ready = false;
 
             // Get all images.
-            List<WebElement> images = driver.findElements(By.tagName("img"));
+            List<WebElement> images = images();
 
             // Only if list contains enough images to access the desired index.
             if(images.size() > imageIndex) {
@@ -224,6 +244,10 @@ public class HomePage extends BasePage {
         };
 
         getWait().until(imageReady);
+    }
+
+    private List<WebElement> images() {
+        return findElements(By.tagName("img"));
     }
 
 }

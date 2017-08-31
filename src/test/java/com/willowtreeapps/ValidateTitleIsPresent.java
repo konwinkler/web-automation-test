@@ -2,6 +2,9 @@ package com.willowtreeapps;
 
 import static org.testng.Assert.assertNotNull;
 
+/**
+ * Verify the title is present.
+ */
 public class ValidateTitleIsPresent extends WebTestBase {
 
     @Override

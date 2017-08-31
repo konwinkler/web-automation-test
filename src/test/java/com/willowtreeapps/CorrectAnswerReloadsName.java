@@ -3,6 +3,9 @@ package com.willowtreeapps;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+/**
+ * Verifies clicking on the correct picture will reload the name.
+ */
 public class CorrectAnswerReloadsName extends WebTestBase {
 
     @Override

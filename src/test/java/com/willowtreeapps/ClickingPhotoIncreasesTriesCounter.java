@@ -2,6 +2,9 @@ package com.willowtreeapps;
 
 import static org.testng.Assert.assertEquals;
 
+/**
+ * Verifies clicking a photo increases the tries counter.
+ */
 public class ClickingPhotoIncreasesTriesCounter extends WebTestBase {
 
     @Override

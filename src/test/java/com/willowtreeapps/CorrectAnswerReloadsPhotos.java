@@ -5,6 +5,9 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+/**
+ * Verifies clicking on the correct picture will reload the pictures.
+ */
 public class CorrectAnswerReloadsPhotos extends WebTestBase {
 
     @Override

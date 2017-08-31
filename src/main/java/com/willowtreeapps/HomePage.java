@@ -33,6 +33,10 @@ public class HomePage extends BasePage {
         return stats().findElement(By.className("correct"));
     }
 
+    private List<WebElement> images() {
+        return findElements(By.tagName("img"));
+    }
+
     private WebElement nameToGuess() {
         return findElement(By.id("name"));
     }
@@ -211,6 +215,11 @@ public class HomePage extends BasePage {
         getWait().until(correctSelectionNotDisplayed);
     }
 
+    /**
+     * Returns all correct photos (green background).
+     *
+     * @return A list of the correct photos.
+     */
     private List<WebElement> correctPhotos() {
         return findElements(By.cssSelector(".photo.correct"));
     }
@@ -244,10 +253,6 @@ public class HomePage extends BasePage {
         };
 
         getWait().until(imageReady);
-    }
-
-    private List<WebElement> images() {
-        return findElements(By.tagName("img"));
     }
 
 }

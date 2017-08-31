@@ -21,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 
 import static org.testng.Assert.assertEquals;
 
+/**
+ * Base class for tests.
+ */
 @Test
 public abstract class WebTestBase {
 

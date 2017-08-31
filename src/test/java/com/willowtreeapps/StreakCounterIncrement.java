@@ -2,7 +2,10 @@ package com.willowtreeapps;
 
 import static org.testng.Assert.assertEquals;
 
-public class StreakCounterIncrementing extends WebTestBase {
+/**
+ * Verifies making a correct guess increases the streak counter.
+ */
+public class StreakCounterIncrement extends WebTestBase {
 
     @Override
     public void run() {

@@ -1,5 +1,10 @@
 package com.willowtreeapps;
 
+/**
+ * Verifies a series of 10 clicks produce the correct results.
+ *
+ * This test will make 10 clicks, 5 of them on correct pictures with a maximum streak of 3.
+ */
 public class ClickTenPhotos extends WebTestBase {
 
     @Override

@@ -23,6 +23,12 @@ repositories {
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
     }
+
+    allprojects {
+        repositories {
+            maven { url 'https://jitpack.io' }
+        }
+    }
 }
 
 dependencies {
@@ -34,6 +40,8 @@ dependencies {
     compile "com.squareup.okhttp3:okhttp:3.0.1"
 
     compile 'org.testng:testng:6.1.1'
+
+    compile 'com.github.willowtreeapps:conductor:2.6.0'
 
     // https://mvnrepository.com/artifact/org.hamcrest/hamcrest-all
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'

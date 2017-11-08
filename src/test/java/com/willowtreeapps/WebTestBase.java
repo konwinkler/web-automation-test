@@ -1,14 +1,11 @@
 package com.willowtreeapps;
 
+import io.ddavison.conductor.Locomotive;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -17,19 +14,16 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import static org.testng.Assert.assertEquals;
 
 /**
  * Base class for tests.
  */
-@Test
-public abstract class WebTestBase {
+public abstract class WebTestBase  extends Locomotive {
 
     private static final Logger logger = LogManager.getLogger(HomePage.class.getName());
 
-    private WebDriver driver;
     HomePage homePage;
 
     /**
@@ -39,14 +33,7 @@ public abstract class WebTestBase {
      */
     @BeforeClass
     public void setup() {
-        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-        Capabilities capabilities = DesiredCapabilities.chrome();
-        driver = new ChromeDriver(capabilities);
         homePage = new HomePage(driver);
-
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-
-        driver.navigate().to("http://www.ericrochester.com/name-game/");
         homePage.waitUntilAllImagesLoaded();
     }
 
@@ -60,8 +47,7 @@ public abstract class WebTestBase {
 
     @AfterClass
     public void teardown() {
-        driver.quit();
-        System.clearProperty("webdriver.chrome.driver");
+        super.teardown();
     }
 
     /**
